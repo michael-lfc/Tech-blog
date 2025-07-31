@@ -21,5 +21,11 @@ app.use('/api/users', userRouter);
 // app.use('/api/posts', tokenValidation, postRouter);
 app.use('/api/posts', postRouter);
 
-const PORT = process.env.PORT || 5000;
-app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
+// const PORT = process.env.PORT || 5000;
+// app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
+
+// Only listen when not on Vercel
+if (!process.env.VERCEL) {
+  const PORT = process.env.PORT || 5000;
+  app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
+}
