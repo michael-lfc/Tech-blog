@@ -49,6 +49,12 @@ router.post('/login', async (req, res) => {
   }
 });
 
+router.get('/', (req, res) => {
+  res.json({ message: 'User route is working!' });
+});
+
+export default router;
+
 // Public user profile
 router.get('/public/:userId', async (req, res) => {
   try {
