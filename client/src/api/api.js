@@ -1,4 +1,5 @@
-const API_BASE = "http://localhost:5000/api";
+const API_BASE = "https://tech-blog-fhqk.onrender.com/api";
+
 
 // Retrieve JWT from localStorage
 function getToken() {
