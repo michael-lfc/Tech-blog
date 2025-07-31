@@ -26,7 +26,19 @@ router.get("/", async (req, res) => {
         .sort({ createdAt: -1 }) // Newest first
         .limit(20); // Prevent overload
       
-      res.json(posts);
+      // res.json(posts);
+       // Rename populated userId to author in response
+    const formatted = posts.map(post => ({
+      _id: post._id,
+      title: post.title,
+      content: post.content,
+      tags: post.tags,
+      createdAt: post.createdAt,
+      updatedAt: post.updatedAt,
+      author: post.userId  // Renamed field
+    }));
+
+    res.json(formatted);
     } catch (error) {
       console.error('Failed to fetch posts:', error);
       res.status(500).json({ 
