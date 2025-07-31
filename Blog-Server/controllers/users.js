@@ -54,6 +54,18 @@ router.get('/', (req, res) => {
 });
 
 
+// GET all users
+// router.get('/', async (req, res) => {
+//   try {
+//     const users = await User.find(); // assuming you're using Mongoose
+//     res.json(users);
+//   } catch (err) {
+//     res.status(500).json({ error: 'Failed to fetch users' });
+//   }
+// });
+
+
+
 // Public user profile
 router.get('/public/:userId', async (req, res) => {
   try {
