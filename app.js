@@ -18,8 +18,8 @@ connectDB();
 
 // Routes
 app.use('/api/users', userRouter);
-app.use('/api/posts', tokenValidation, postRouter);
-// app.use('/api/posts', postRouter);
+// app.use('/api/posts', tokenValidation, postRouter);
+app.use('/api/posts', postRouter);
 
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
