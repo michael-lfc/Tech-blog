@@ -49,20 +49,20 @@ router.post('/login', async (req, res) => {
   }
 });
 
-router.get('/', (req, res) => {
-  res.json({ message: 'User route is working!' });
-});
-
-
-// GET all users
-// router.get('/', async (req, res) => {
-//   try {
-//     const users = await User.find(); // assuming you're using Mongoose
-//     res.json(users);
-//   } catch (err) {
-//     res.status(500).json({ error: 'Failed to fetch users' });
-//   }
+// router.get('/', (req, res) => {
+//   res.json({ message: 'User route is working!' });
 // });
+
+
+// Get all users (for admin or public view)
+router.get('/', async (req, res) => {
+  try {
+    const users = await User.find(); // assuming you're using Mongoose
+    res.json(users);
+  } catch (err) {
+    res.status(500).json({ error: 'Failed to fetch users' });
+  }
+});
 
 
 
