@@ -316,6 +316,19 @@ body.dark-mode textarea {
   border: 1px solid #555;
 }
 
+.read-more-btn {
+  color: #007bff;
+  background: none;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  font-weight: bold;
+  margin-top: 5px;
+}
+.read-more-btn:hover {
+  text-decoration: underline;
+}
+
 /* ==== RESPONSIVE STYLING ==== */
 @media (max-width: 1024px) {
   .container {
