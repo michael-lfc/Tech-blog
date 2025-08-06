@@ -81,14 +81,6 @@ function Posts() {
       </form>
 
       <div className="posts-grid">
-        {/* {posts.map((post) => (
-          <div key={post._id} className="post-card">
-            <h3>{post.title}</h3>
-            <p>{post.content}</p>
-            <span>Author: {post.author?.username || "Unknown"}</span>
-            <div className="tags">{post.tags?.join(", ")}</div>
-          </div>
-        ))} */}
         {posts.map((post) => (
           <PostCard key={post._id} post={post} />
         ))}
