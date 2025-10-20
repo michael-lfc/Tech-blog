@@ -50,8 +50,8 @@ connectDB();
 
 // Routes
 app.use('/api/users', userRouter);
-// app.use('/api/posts', tokenValidation, postRouter);
-app.use('/api/posts', postRouter);
+app.use('/api/posts', tokenValidation, postRouter);
+// app.use('/api/posts', postRouter);
 
 // ✅ Add this route for root path:
 app.get("/", (req, res) => {
