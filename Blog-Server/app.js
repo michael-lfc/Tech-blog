@@ -1,35 +1,3 @@
-// import express from 'express';
-// import dotenv from 'dotenv';
-// import cors from 'cors';
-// import userRouter from './controllers/users.js';
-// import postRouter from './controllers/posts.js';
-// import { connectDB } from './db.js';
-// import tokenValidation from './middlewares/tokenValidation.js';
-
-// dotenv.config();
-// const app = express();
-
-// // Middleware
-// app.use(cors()); // Enable CORS
-// app.use(express.json());
-
-// // Database
-// connectDB();
-
-// // Routes
-// app.use('/api/users', userRouter);
-// // app.use('/api/posts', tokenValidation, postRouter);
-// app.use('/api/posts', postRouter);
-
-// // const PORT = process.env.PORT || 5000;
-// // app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
-
-// // Only listen when not on Vercel
-// if (!process.env.VERCEL) {
-//   const PORT = process.env.PORT || 5000;
-//   app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
-// }
-
 import express from 'express';
 import dotenv from 'dotenv';
 import cors from 'cors';
@@ -50,8 +18,8 @@ connectDB();
 
 // Routes
 app.use('/api/users', userRouter);
-app.use('/api/posts', tokenValidation, postRouter);
-// app.use('/api/posts', postRouter);
+// app.use('/api/posts', tokenValidation, postRouter);
+app.use('/api/posts', postRouter);
 
 // ✅ Add this route for root path:
 app.get("/", (req, res) => {
