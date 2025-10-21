@@ -10,7 +10,11 @@ dotenv.config();
 const app = express();
 
 // Middleware
-app.use(cors());
+// app.use(cors());
+app.use(cors({
+  origin: "*",  // Allow ALL domains (temporary)
+  credentials: true
+}));
 app.use(express.json());
 
 // Database
@@ -18,8 +22,8 @@ connectDB();
 
 // Routes
 app.use('/api/users', userRouter);
-// app.use('/api/posts', tokenValidation, postRouter);
-app.use('/api/posts', postRouter);
+app.use('/api/posts', tokenValidation, postRouter);
+// app.use('/api/posts', postRouter);
 
 // ✅ Add this route for root path:
 app.get("/", (req, res) => {
