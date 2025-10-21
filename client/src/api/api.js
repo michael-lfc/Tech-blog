@@ -1,3 +1,8 @@
+// Debug - check the API base URL
+console.log("Current API Base:", process.env.REACT_APP_API_BASE);
+console.log("Environment:", process.env.NODE_ENV);
+
+
 const API_BASE = process.env.REACT_APP_API_BASE;
 
 
