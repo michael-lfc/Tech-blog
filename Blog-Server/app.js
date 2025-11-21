@@ -1,3 +1,46 @@
+// import express from 'express';
+// import dotenv from 'dotenv';
+// import cors from 'cors';
+// import userRouter from './controllers/users.js';
+// import postRouter from './controllers/posts.js';
+// import { connectDB } from './db.js';
+// import tokenValidation from './middlewares/tokenValidation.js';
+
+// dotenv.config();
+// const app = express();
+
+// // Middleware
+// // app.use(cors());
+
+// app.use(cors({
+//   origin: "https://your-frontend.vercel.app",
+//   credentials: true  // only needed if you send cookies
+// }));
+
+
+// app.use(express.json());
+
+// // Database
+// connectDB();
+
+// // Routes
+// app.use('/api/users', userRouter);
+// app.use('/api/posts', tokenValidation, postRouter);
+// // app.use('/api/posts', postRouter);
+
+// // ✅ Add this route for root path:
+// app.get("/", (req, res) => {
+//   res.send("Server is up and running!");
+// });
+
+// // Only listen locally (not on Vercel)
+// if (!process.env.VERCEL) {
+//   const PORT = process.env.PORT || 5000;
+//   app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
+// }
+
+// export default app; // ✅ Don’t forget this for Vercel
+
 import express from 'express';
 import dotenv from 'dotenv';
 import cors from 'cors';
@@ -9,34 +52,39 @@ import tokenValidation from './middlewares/tokenValidation.js';
 dotenv.config();
 const app = express();
 
-// Middleware
-// app.use(cors());
-
-app.use(cors({
-  origin: "https://your-frontend.vercel.app",
-  credentials: true  // only needed if you send cookies
-}));
-
+// CORS (updated with your real frontend URL)
+app.use(
+  cors({
+    origin: "https://tech-blog-w75o.vercel.app",
+    credentials: true,
+  })
+);
 
 app.use(express.json());
 
-// Database
+// Connect Database
 connectDB();
 
-// Routes
-app.use('/api/users', userRouter);
-app.use('/api/posts', tokenValidation, postRouter);
-// app.use('/api/posts', postRouter);
+// Base API route
+app.get("/api", (req, res) => {
+  res.send("API is live. Use /api/users or /api/posts.");
+});
 
-// ✅ Add this route for root path:
+// User routes
+app.use('/api/users', userRouter);
+
+// Post routes (protected)
+app.use('/api/posts', tokenValidation, postRouter);
+
+// Root route
 app.get("/", (req, res) => {
   res.send("Server is up and running!");
 });
 
-// Only listen locally (not on Vercel)
+// Local server (Heroku ignores this when deployed)
 if (!process.env.VERCEL) {
   const PORT = process.env.PORT || 5000;
   app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
 }
 
-export default app; // ✅ Don’t forget this for Vercel
+export default app;
