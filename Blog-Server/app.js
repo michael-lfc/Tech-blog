@@ -66,9 +66,9 @@ app.use(express.json());
 connectDB();
 
 // Base API route
-app.get("/api", (req, res) => {
-  res.send("API is live. Use /api/users or /api/posts.");
-});
+// app.get("/api", (req, res) => {
+//   res.send("API is live. Use /api/users or /api/posts.");
+// });
 
 // User routes
 app.use('/api/users', userRouter);
