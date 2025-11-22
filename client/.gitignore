@@ -29,3 +29,4 @@ package-lock.js
 
 client/
 .env
+.vercel
