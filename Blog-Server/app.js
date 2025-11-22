@@ -55,7 +55,7 @@ const app = express();
 // CORS (updated with your real frontend URL)
 app.use(
   cors({
-    origin: "https://tech-blog-w75o.vercel.app",
+    origin: "https://blog-client-lbfpasy48-michaels-projects-62bd8962.vercel.app",
     credentials: true,
   })
 );
