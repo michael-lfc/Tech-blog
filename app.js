@@ -33,9 +33,9 @@ connectDB();
     await sequelize.authenticate();
     console.log('✅ Database connected successfully');
 
-    // ⚠️ TEMP FIX: drop & recreate tables to avoid "Too many keys" error
-    await sequelize.sync({ force: true });
-    console.log('✅ Database synced successfully (force: true)');
+    // ⚡ Safe table syncing: update tables without dropping existing data
+    await sequelize.sync({ alter: true });
+    console.log('✅ Database synced successfully (alter: true)');
 
     // Routes
     app.use('/countries', countryRoutes);
