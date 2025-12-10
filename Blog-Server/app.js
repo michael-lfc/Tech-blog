@@ -10,12 +10,20 @@ dotenv.config();
 const app = express();
 
 // CORS (updated with your real frontend URL)
-app.use(
-  cors({
-    origin: "https://blog-client-lbfpasy48-michaels-projects-62bd8962.vercel.app",
-    credentials: true,
-  })
-);
+// app.use(
+//   cors({
+//     origin: "https://blog-client-lbfpasy48-michaels-projects-62bd8962.vercel.app",
+//     credentials: true,
+//   })
+// );
+
+app.use(cors({
+  origin: [
+    "http://localhost:3000",
+    "https://tech-blog-2yym.vercel.app"   // NEW FRONTEND!!!!
+  ],
+  credentials: true
+}));
 
 app.use(express.json());
 
