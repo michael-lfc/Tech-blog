@@ -6,6 +6,10 @@ Live Link:
 
 http://tech-blog-2yym.vercel.app/
 
+github link:
+
+https://github.com/michael-lfc/Tech-blog
+
 ## ✨ Features
 
 - 📝 User registration and login with JWT authentication
