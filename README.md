@@ -1,6 +1,7 @@
 # 🧠 Tech Blog
 
 A full-stack blog application where users can register, log in, create posts, and view updates in the tech world.
+http://tech-blog-2yym.vercel.app/
 
 ## ✨ Features
 
