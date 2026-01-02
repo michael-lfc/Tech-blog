@@ -1,33 +1,39 @@
-import express from 'express'
-import { Router } from 'express';
+import express from 'express';
 import Post from '../models/Post.js';
 import tokenValidation from '../middlewares/tokenValidation.js';
-import mongoose from 'mongoose'; // MUST be imported
-import User from '../models/User.js'
-const router = express.Router()
+import mongoose from 'mongoose';
+import User from '../models/User.js';
 
-// Create Post (Protected)
+const router = express.Router();
+
+// Create Post
 router.post("/", tokenValidation, async (req, res) => {
   try {
     const { title, content, tags } = req.body;
-    const newPost = new Post({ userId: req.userId, title, content, tags });
+    const newPost = new Post({
+      userId: req.userId,
+      title,
+      content,
+      tags: tags || []
+    });
     await newPost.save();
+    await newPost.populate('userId', 'username profilePhoto');
+
     res.status(201).json({ message: 'Post created', post: newPost });
   } catch (error) {
     res.status(500).json({ message: 'Error creating post', error: error.message });
   }
 });
 
-// Get All Posts (Public - for index.html)
-router.get("/", async (req, res) => { 
-    try {
-      const posts = await Post.find()
-        .populate('userId', 'username profilePhoto') // Public user info only
-        .sort({ createdAt: -1 }) // Newest first
-        .limit(20); // Prevent overload
-      
-      // res.json(posts);
-       // Rename populated userId to author in response
+// Get All Posts (Public)
+router.get("/", async (req, res) => {
+  try {
+    const posts = await Post.find()
+      .populate('userId', 'username profilePhoto')
+      .populate('comments.userId', 'username profilePhoto')
+      .sort({ createdAt: -1 })
+      .limit(20);
+
     const formatted = posts.map(post => ({
       _id: post._id,
       title: post.title,
@@ -35,136 +41,102 @@ router.get("/", async (req, res) => {
       tags: post.tags,
       createdAt: post.createdAt,
       updatedAt: post.updatedAt,
-      author: post.userId  // Renamed field
+      author: post.userId ? {
+        _id: post.userId._id,
+        username: post.userId.username,
+        profilePhoto: post.userId.profilePhoto
+      } : null,
+      likes: post.likes || [],
+      comments: post.comments.map(c => ({
+        _id: c._id,
+        text: c.text,
+        createdAt: c.createdAt,
+        author: c.userId ? {
+          _id: c.userId._id,
+          username: c.userId.username,
+          profilePhoto: c.userId.profilePhoto
+        } : null
+      }))
     }));
 
     res.json(formatted);
-    } catch (error) {
-      console.error('Failed to fetch posts:', error);
-      res.status(500).json({ 
-        message: 'Error fetching posts', 
-        error: process.env.NODE_ENV === 'development' ? error.message : 'Server error' 
-      });
-    }
-  });
+  } catch (error) {
+    console.error('Failed to fetch posts:', error);
+    res.status(500).json({ message: 'Error fetching posts' });
+  }
+});
 
-// Get post by id
-router.get("/my-posts/:id", tokenValidation, async (req, res) => {
-    try {
-      // Validate ID format
-      if (!mongoose.Types.ObjectId.isValid(req.params.id)) {
-        return res.status(400).json({ 
-          message: "Invalid post ID format" 
-        });
-      }
-  
-      // Find post with ownership check
-      const post = await Post.findOne({
-        _id: new mongoose.Types.ObjectId(req.params.id),
-        userId: req.userId
-      }).populate('userId', 'username profilePhoto');
-  
-      if (!post) {
-        return res.status(404).json({ 
-          message: 'Post not found or unauthorized' 
-        });
-      }
-  
-      res.json(post);
-      
-    } catch (error) {
-      console.error('Error in /my-posts/:id:', error);
-      res.status(500).json({ 
-        message: 'Server error',
-        error: error.message // Now visible
-      });
-    }
-  })
+// React to Post
+router.post("/:postId/react", tokenValidation, async (req, res) => {
+  try {
+    const { postId } = req.params;
+    const { emoji } = req.body;
+    const userId = req.userId;
 
-// Update Route
-router.put("/:postId", tokenValidation, async (req, res) => {
-    try {
-      // 1. Validate post ID format
-      if (!mongoose.Types.ObjectId.isValid(req.params.postId)) {
-        return res.status(400).json({ message: "Invalid post ID" });
-      }
-  
-      // 2. Find post and verify ownership
-      const post = await Post.findOne({
-        _id: req.params.postId,
-        userId: req.userId  // Critical ownership check
-      });
-  
-      if (!post) {
-        return res.status(404).json({ 
-          message: 'Post not found or unauthorized' 
-        });
-      }
-  
-      // 3. Update post fields (not user fields)
-      const { title, content, tags } = req.body;
-      
-      if (title !== undefined) post.title = title;
-      if (content !== undefined) post.content = content; 
-      if (tags !== undefined) post.tags = tags;
-  
-      // 4. Save updated post
-      const updatedPost = await post.save();
-  
-      res.json({
-        message: 'Post updated successfully',
-        post: updatedPost
-      });
-  
-    } catch (error) {
-      console.error('Post update error:', error);
-      res.status(500).json({ 
-        message: 'Error updating post',
-        error: error.message 
-      });
-    }
-  });
+    if (!emoji) return res.status(400).json({ message: "Emoji is required" });
+    if (!mongoose.Types.ObjectId.isValid(postId)) return res.status(400).json({ message: "Invalid post ID" });
 
+    const post = await Post.findById(postId);
+    if (!post) return res.status(404).json({ message: "Post not found" });
 
-router.delete('/:postId', tokenValidation, async (req, res) => {
-    try {
-      const { postId } = req.params;
-      const userId = req.userId;
-  
-      // 1. Validate ID format
-      if (!mongoose.Types.ObjectId.isValid(postId)) {
-        return res.status(400).json({ message: 'Invalid post ID' });
+    const existingIndex = post.likes.findIndex(l => l.userId.toString() === userId);
+
+    if (existingIndex !== -1) {
+      if (post.likes[existingIndex].emoji === emoji) {
+        post.likes.splice(existingIndex, 1); // Unlike
+      } else {
+        post.likes[existingIndex].emoji = emoji; // Change emoji
       }
-  
-      // 2. Find the post
-      const post = await Post.findById(postId);
-      if (!post) {
-        return res.status(404).json({ message: 'Post not found' });
-      }
-  
-      // 3. Check ownership (or admin role)
-      const user = await User.findById(userId);
-      if (post.userId.toString() !== userId && user?.role !== 'admin') {
-        return res.status(403).json({ 
-          message: 'Unauthorized: Not the owner or admin' 
-        });
-      }
-  
-      // 4. Delete the post
-      await Post.deleteOne({ _id: postId });
-  
-      // 5. Update user's post count (if needed)
-      await User.findByIdAndUpdate(post.userId, { $inc: { postCount: -1 } });
-  
-      res.status(200).json({ 
-        success: true,
-        message: 'Post deleted successfully' 
-      });
-  
-    } catch (error) {
-      console.error("Delete error:", error);
-      res.status(500).json({ message: 'Server error' });
+    } else {
+      post.likes.push({ userId, emoji }); // New reaction
     }
-  });
+
+    await post.save();
+    res.json({ message: "Reaction updated", likes: post.likes });
+  } catch (error) {
+    console.error("Reaction error:", error);
+    res.status(500).json({ message: "Server error" });
+  }
+});
+
+// Add Comment
+router.post("/:postId/comments", tokenValidation, async (req, res) => {
+  try {
+    const { postId } = req.params;
+    const { text } = req.body;
+    const userId = req.userId;
+
+    if (!text?.trim()) return res.status(400).json({ message: "Comment text is required" });
+    if (!mongoose.Types.ObjectId.isValid(postId)) return res.status(400).json({ message: "Invalid post ID" });
+
+    const post = await Post.findById(postId);
+    if (!post) return res.status(404).json({ message: "Post not found" });
+
+    post.comments.push({ userId, text: text.trim() });
+    await post.save();
+
+    await post.populate('comments.userId', 'username profilePhoto');
+    const addedComment = post.comments[post.comments.length - 1];
+
+    res.status(201).json({
+      message: "Comment added",
+      comment: {
+        _id: addedComment._id,
+        text: addedComment.text,
+        createdAt: addedComment.createdAt,
+        author: addedComment.userId ? {
+          _id: addedComment.userId._id,
+          username: addedComment.userId.username,
+          profilePhoto: addedComment.userId.profilePhoto
+        } : null
+      }
+    });
+  } catch (error) {
+    console.error("Comment error:", error);
+    res.status(500).json({ message: "Server error" });
+  }
+});
+
+// Keep your existing: update, delete, my-posts routes here...
 
 export default router;

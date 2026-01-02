@@ -419,3 +419,117 @@ body.dark-mode textarea {
   }
 }
 
+/* ===============================
+   REACTIONS
+================================ */
+
+.reaction-btn {
+  font-size: 20px;
+  padding: 8px 12px;
+  margin-right: 8px;
+  border: 1px solid #eee;
+  border-radius: 20px;
+  background: #f9f9f9;
+  cursor: pointer;
+  transition: background 0.2s ease, transform 0.1s ease;
+}
+
+.reaction-btn:hover {
+  transform: scale(1.05);
+}
+
+.reaction-btn.active {
+  background: #fff0f0;
+  border-color: #ff3040;
+}
+
+/* ===============================
+   COMMENTS
+================================ */
+
+.comments-section {
+  margin-top: 20px;
+}
+
+.toggle-comments-btn {
+  background: none;
+  border: none;
+  color: #007bff;
+  cursor: pointer;
+  font-weight: bold;
+  margin-bottom: 10px;
+}
+
+.toggle-comments-btn:hover {
+  text-decoration: underline;
+}
+
+.comments-list {
+  margin-top: 12px;
+}
+
+.comment {
+  background: #f8f9fa;
+  padding: 12px;
+  border-radius: 8px;
+  margin-bottom: 12px;
+}
+
+.comment strong {
+  display: block;
+  margin-bottom: 4px;
+}
+
+.comment small {
+  color: #777;
+}
+
+/* ===============================
+   ADD COMMENT FORM
+================================ */
+
+.add-comment-form {
+  display: flex;
+  gap: 10px;
+  margin-top: 16px;
+}
+
+.add-comment-form input {
+  flex: 1;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+}
+
+.add-comment-form button {
+  padding: 10px 14px;
+  border-radius: 6px;
+  border: none;
+  background: #007bff;
+  color: white;
+  cursor: pointer;
+}
+
+.add-comment-form button:hover {
+  background: #0056b3;
+}
+
+/* Dark mode support */
+body.dark-mode .reaction-btn {
+  background: #2a2a2a;
+  border-color: #444;
+  color: #fff;
+}
+
+body.dark-mode .reaction-btn.active {
+  background: #402020;
+  border-color: #ff5a5a;
+}
+
+body.dark-mode .comment {
+  background: #2a2a2a;
+}
+
+body.dark-mode .toggle-comments-btn {
+  color: #90cdf4;
+}
