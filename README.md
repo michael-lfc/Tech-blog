@@ -5,9 +5,13 @@
 
 
 
+
+
 A full-stack blogging platform built with React and Node.js + Express, allowing users to create posts, react with emojis, comment, and manage profiles. Fully deployed with Vercel (frontend) and Render (backend).
 
 🌟 Live Demo
+
+GitHub Repo: https://github.com/michael-lfc/Tech-blog
 
 Frontend (Vercel): https://tech-blog-qz17.vercel.app
 
@@ -42,11 +46,6 @@ Tech-blog/
 
 ⚡ Screenshots
 
-Homepage
-
-Post Detail / Comment / React
-
-Replace these images with actual screenshots of your app.
 
 🛠️ Tech Stack
 Frontend	Backend	Database	Deployment
@@ -80,7 +79,7 @@ Start the backend server:
 npm start
 
 
-The backend runs at http://localhost:5000.
+Backend runs at http://localhost:5000.
 
 Frontend Setup
 
@@ -104,7 +103,7 @@ Start the frontend:
 npm start
 
 
-The frontend runs at http://localhost:3000.
+Frontend runs at http://localhost:3000.
 
 🚀 Deployment
 Backend (Render)
@@ -171,5 +170,3 @@ Commit: git commit -m "Add feature"
 Push: git push origin feature-name
 
 Open a Pull Request
-
-📄 License
